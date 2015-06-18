@@ -33,6 +33,18 @@ def show(args):
 	info = github.get_repo(args.owner, args.repo)
 	pprint.pprint(info)
 
+def generate(args):
+	template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+
+	if not args.filename:
+		args.filename = args.template
+
+	info = github.get_repo(args.owner, args.repo)
+	env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir))
+	template = env.get_template(args.template)
+	outfile = open(args.filename, 'wb')
+	outfile.write(template.render(info).encode('utf-8'))
+
 def main():
 	parser = argparse.ArgumentParser(description=__doc__)
 	parser.add_argument('--version', action='version', version='%(prog)s {0}'.format(__version__))
@@ -42,6 +54,13 @@ def main():
 	parser_show.add_argument('owner', help='repo owner')
 	parser_show.add_argument('repo', help='repo name')
 	parser_show.set_defaults(func=show)
+	
+	parser_generate = subparsers.add_parser('generate', help='generate RPM spec or DEB dsc file for a package')
+	parser_generate.add_argument('owner', help='repo owner')
+	parser_generate.add_argument('repo', help='repo name')
+	parser_generate.add_argument('-t', '--template', help='file template')
+	parser_generate.add_argument('-f', '--filename', help='spec filename (optional)')
+	parser_generate.set_defaults(func=generate)
 
 	parser_help = subparsers.add_parser('help', help='show this help')
 	parser_help.set_defaults(func=lambda args: parser.print_help())
