@@ -61,7 +61,7 @@ def main():
 	parser_generate = subparsers.add_parser('generate', help='generate RPM spec or DEB dsc file for a package')
 	parser_generate.add_argument('owner', help='repo owner')
 	parser_generate.add_argument('repo', help='repo name')
-	parser_generate.add_argument('-t', '--template', help='file template')
+	parser_generate.add_argument('-t', '--template', help='file template', default='opensuse.spec')
 	parser_generate.add_argument('-f', '--filename', help='spec filename (optional)')
 	parser_generate.set_defaults(func=generate)
 
