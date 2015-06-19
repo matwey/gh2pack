@@ -34,13 +34,16 @@ def show(args):
 	pprint.pprint(info)
 
 def generate(args):
-	template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+	template_path = ["templates"]
 
 	if not args.filename:
 		args.filename = args.template
 
 	info = github.get_repo(args.owner, args.repo)
-	env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir))
+	if "language" in info:
+		template_path.insert(0, os.path.join("templates", info["language"]))
+
+	env = jinja2.Environment(loader=jinja2.ChoiceLoader([jinja2.PackageLoader("gh2pack", x) for x in template_path]))
 	template = env.get_template(args.template)
 	outfile = open(args.filename, 'wb')
 	outfile.write(template.render(info).encode('utf-8'))
