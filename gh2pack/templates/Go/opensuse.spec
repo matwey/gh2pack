@@ -15,7 +15,7 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-Name:           go-{{name}}
+Name:           golang-github-{{full_name|replace("/","-")}}
 Version:        0
 Release:        0
 License:        {{license.key|upper}}
@@ -23,7 +23,7 @@ Summary:        {{description}}
 Url:            {{homepage}}
 Group:          Development/Languages/Other
 Source:         {{name}}-%{version}.tar.bz2
-BuildRequires:  go-devel
+BuildRequires:  golang-packaging
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %{go_requires}
 %{go_provides}
@@ -32,7 +32,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
  
 %description
 
-%godoc_package 
+%gosrc_package
 
 %prep
 %setup -q -n {{name}}-%{version}
@@ -43,7 +43,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %install
 %goinstall
-%godoc
+%gosrc
 
 %check
 %gotest github.com/{{full_name}}
@@ -53,7 +53,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %doc README LICENSE
 %{go_contribdir}/*
 
-%files doc
+%files source
 %defattr(-,root,root,-)
 %{go_contribsrcdir}/*
 
